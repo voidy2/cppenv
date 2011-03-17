@@ -1,0 +1,27 @@
+-- 自動ビルドCI環境
+omake -P や omake test -Pにより継続監視ビルド
+omake test から生成されるxmlはJenkinsプラグイン対応
+
+-- コマンド
+$ omake
+コンパイル実行
+<生成物>
+build/main
+
+$ omake test
+テスト実行
+Google C++ Testing Frameworkを使用
+カバレッジにgcovを使用
+<生成物>
+テスト結果(JUnit互換) : report/unittest_result.xml
+カバレッジ結果(Cobertura互換) : report/coverage.xml
+
+$ omake doxygen
+doxygenによりドキュメント出力
+<生成物>
+html : html/index.html
+pdf : latex/refman.pdf
+xml : xml/
+
+$ omake clean
+不要ファイル削除
