@@ -1,0 +1,105 @@
+########################################################################
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this file, to deal in the File without
+# restriction, including without limitation the rights to use,
+# copy, modify, merge, publish, distribute, sublicense, and/or
+# sell copies of the File, and to permit persons to whom the
+# File is furnished to do so, subject to the following condition:
+#
+# THE FILE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+# OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+# IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+# DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+# OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE FILE OR
+# THE USE OR OTHER DEALINGS IN THE FILE.
+
+INCLUDE_DIR = include
+SRC_DIR = src
+TEST_DIR = test
+BUILD_DIR = build
+REPORT_DIR = report
+DOXYGEN_OUTPUT_DIR[] = html xml latex rtf
+
+PROGRAM = $(BUILD_DIR)/main
+TEST_PROGRAM = $(BUILD_DIR)/main_test
+
+CXXFLAGS += -Wall -coverage
+ASFLAGS +=
+LDFLAGS +=
+INCLUDES += $(dir $(INCLUDE_DIR) $(SRC_DIR))
+
+.PHONY: all clean test init doxygen
+
+
+########################################################################
+# Target Program
+#
+
+CXXFILES[] = $(removesuffix $(filter %.cpp, $(ls R, $(SRC_DIR))))
+CXXProgram($(PROGRAM), $(CXXFILES))
+
+
+########################################################################
+# Test Program
+#
+
+TEST_CXXFILES[] = $(filter-out %main, $(CXXFILES)) $(removesuffix $(filter %.cpp, $(ls R, $(TEST_DIR))))
+
+section
+	CXXFLAGS += -lgtest -lgmock -pthread
+	CXXProgram($(TEST_PROGRAM), $(TEST_CXXFILES))
+
+
+########################################################################
+# Subdirectories
+#
+
+foreach(d, $(subdirs $(SRC_DIR) $(TEST_DIR)))
+	.SUBDIRS: $(d)
+		if $(file-exists OMakefile)
+			include OMakefile
+		else
+			clean:
+				rm -f *.o *.gc*
+
+make_doxygen_latex(x) =
+	shell(doxygen)
+	foreach(t, $(ls latex/))
+	    shell(nkf -e --overwrite $(t))
+	shell(cd latex; make; dvipdfmx -q refman.dvi)
+
+run_test(x) =
+	shell(mkdir -p $(REPORT_DIR))
+	color = --gtest_color=yes
+	xml = --gtest_output="xml:$(REPORT_DIR)/unittest_result.xml"
+	test_result = $(shella $(TEST_PROGRAM) $(color) $(xml))
+	foreach(line, $(test_result))
+	    echo($(line))
+	coverage = $(shell ./scripts/gcovr -r $(SRC_DIR) -e $(TEST_DIR) -x -o $(REPORT_DIR)/coverage.xml)
+	echo($(REPORT_DIR)/coverage.xml)
+
+########################################################################
+# Build targets
+#
+
+init:
+	mkdir -p $(BUILD_DIR)
+
+test: $(TEST_PROGRAM)
+	run_test(_)
+
+clean:
+	rm -rf $(PROGRAM) $(TEST_PROGRAM) $(BUILD_DIR) *.omc $(DOXYGEN_OUTPUT_DIR) $(REPORT_DIR)
+
+$(PROGRAM)$(EXE): init
+
+$(TEST_PROGRAM): init
+
+doxygen: $(filter %.cpp, $(ls R, $(SRC_DIR))) $(filter %.h, $(ls $(INCLUDE_DIR)))
+	make_doxygen_latex(_)
+
+all: $(PROGRAM)$(EXE)
+
+.DEFAULT: all
+

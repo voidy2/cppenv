@@ -1,0 +1,10 @@
+*.gc*
+latex/
+html/
+build/
+xml/
+rtf/
+*.omc
+*.o
+*.omakedb*
+
