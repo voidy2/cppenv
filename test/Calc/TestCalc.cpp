@@ -11,7 +11,7 @@ public:
     calc  = new Calc();
   }
 
-  virtual void tearDown()
+  virtual void TearDown()
   {
     delete calc;
   }
