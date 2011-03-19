@@ -13,8 +13,9 @@ $ omake test
 Google C++ Testing Frameworkを使用
 カバレッジにgcovを使用
 <生成物>
-テスト結果(JUnit互換) : report/unittest_result.xml
+テスト結果(JUnit互換) : report/unittest-result.xml
 カバレッジ結果(Cobertura互換) : report/coverage.xml
+CppCheck結果 : report/cppcheck-result.xml
 
 $ omake doxygen
 doxygenによりドキュメント出力
