@@ -21,6 +21,10 @@ BUILD_DIR = build
 REPORT_DIR = report
 DOXYGEN_OUTPUT_DIR[] = html xml latex rtf
 
+UNITTEST_RESULT = unittest-result.xml
+CPPCHECK_RESULT = cppcheck-result.xml
+COVERAGE_RESULT = coverage.xml
+
 PROGRAM = $(BUILD_DIR)/main
 TEST_PROGRAM = $(BUILD_DIR)/main_test
 
@@ -72,12 +76,15 @@ make_doxygen_latex(x) =
 run_test(x) =
 	shell(mkdir -p $(REPORT_DIR))
 	color = --gtest_color=yes
-	xml = --gtest_output="xml:$(REPORT_DIR)/unittest_result.xml"
+	xml = --gtest_output="xml:$(REPORT_DIR)/$(UNITTEST_RESULT)"
 	test_result = $(shella $(TEST_PROGRAM) $(color) $(xml))
 	foreach(line, $(test_result))
 	    echo($(line))
-	coverage = $(shell ./scripts/gcovr -r $(SRC_DIR) -e $(TEST_DIR) -x -o $(REPORT_DIR)/coverage.xml)
-	echo($(REPORT_DIR)/coverage.xml)
+	echo($(REPORT_DIR)/$(UNITTEST_RESULT))
+	coverage = $(shell ./scripts/gcovr -r $(SRC_DIR) -e $(TEST_DIR) -x -o $(REPORT_DIR)/$(COVERAGE_RESULT))
+	echo($(REPORT_DIR)/$(COVERAGE_RESULT))
+	cppcheck = $(shell sh ./scripts/run_cppcheck $(SRC_DIR) $(INCLUDE_DIR) $(REPORT_DIR)/$(CPPCHECK_RESULT))
+	echo($(REPORT_DIR)/$(CPPCHECK_RESULT))
 
 ########################################################################
 # Build targets

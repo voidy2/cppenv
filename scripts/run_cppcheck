@@ -1,0 +1,2 @@
+#!/bin/sh
+cppcheck -a -s $1 --xml -I $2 2> $3
