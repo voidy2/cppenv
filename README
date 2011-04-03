@@ -20,9 +20,9 @@ CppCheck結果 : report/cppcheck-result.xml
 $ omake doxygen
 doxygenによりドキュメント出力
 <生成物>
-html : html/index.html
-pdf : latex/refman.pdf
-xml : xml/
+html : doc/html/index.html
+pdf : doc/latex/refman.pdf
+xml : doc/xml/
 
 $ omake clean
 不要ファイル削除

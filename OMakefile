@@ -19,7 +19,7 @@ SRC_DIR = src
 TEST_DIR = test
 BUILD_DIR = build
 REPORT_DIR = report
-DOXYGEN_OUTPUT_DIR[] = html xml latex rtf
+DOXYGEN_OUTPUT_DIR = doc
 
 UNITTEST_RESULT = unittest-result.xml
 CPPCHECK_RESULT = cppcheck-result.xml
@@ -69,9 +69,9 @@ foreach(d, $(subdirs $(SRC_DIR) $(TEST_DIR)))
 
 make_doxygen_latex(x) =
 	shell(doxygen)
-	foreach(t, $(ls latex/))
+	foreach(t, $(ls $(DOXYGEN_OUTPUT_DIR)/latex/))
 	    shell(nkf -e --overwrite $(t))
-	shell(cd latex; make; dvipdfmx -q refman.dvi)
+	shell(cd $(DOXYGEN_OUTPUT_DIR)/latex; make; dvipdfmx -q refman.dvi)
 
 run_test(x) =
 	shell(mkdir -p $(REPORT_DIR))
