@@ -15,7 +15,7 @@ class Calc
 {
 public:
     /**
-     * @brif add関数
+     * @brief add関数
      *
      * @param a 引数1
      * @param b 引数2
