@@ -79,13 +79,13 @@ run_test(x) =
 	shell(mkdir -p $(REPORT_DIR))
 	color = --gtest_color=yes
 	xml = --gtest_output="xml:$(REPORT_DIR)/$(UNITTEST_RESULT)"
-	test_result = $(shella ./build/main_test $(color) $(xml) $(GMOCK_FLAGS))
-	foreach(line, $(test_result))
-	    echo($(line))
+	test_result = $(shell-code ./build/main_test $(color) $(xml) $(GMOCK_FLAGS))
+	#foreach(line, $(test_result))
+	    #echo($(line))
 	echo($(REPORT_DIR)/$(UNITTEST_RESULT))
-	coverage = $(shell ./scripts/gcovr -r $(SRC_DIR) -e $(TEST_DIR) -x -o $(REPORT_DIR)/$(COVERAGE_RESULT))
+	#coverage = $(shell ./scripts/gcovr -r $(SRC_DIR) -e $(TEST_DIR) -x -o $(REPORT_DIR)/$(COVERAGE_RESULT))
 	echo($(REPORT_DIR)/$(COVERAGE_RESULT))
-	cppcheck = $(shell sh ./scripts/run_cppcheck $(SRC_DIR) $(INCLUDE_DIR) $(REPORT_DIR)/$(CPPCHECK_RESULT))
+	#cppcheck = $(shell sh ./scripts/run_cppcheck $(SRC_DIR) $(INCLUDE_DIR) $(REPORT_DIR)/$(CPPCHECK_RESULT))
 	echo($(REPORT_DIR)/$(CPPCHECK_RESULT))
 
 ########################################################################

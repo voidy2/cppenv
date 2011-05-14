@@ -4,6 +4,7 @@ html/
 build/
 xml/
 rtf/
+report/
 *.omc
 *.o
 *.omakedb*
